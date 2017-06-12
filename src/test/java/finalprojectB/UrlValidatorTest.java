@@ -94,13 +94,32 @@ public class UrlValidatorTest extends TestCase {
       valid = urlVal.isValid("www.☃☃☃.com");
       assertFalse(valid);
       //test invalid url structure
-      valid = urlVal.isValid("http://www.##amazon.com"); //for somereason can get this to get branch coverage for line 290
+      valid = urlVal.isValid("http://www.##amazon.com"); //for somereason cannot get this to get branch coverage for line 290
       assertFalse(valid);
       //test file
       valid = urlVal.isValid("file:///Z:/final/final/target/site/cobertura/index.html");
       //assertTrue(valid); // probably false for you
       valid = urlVal.isValid("file:///Z:/final/final/target///site/cobertura/index.html");
       assertFalse(valid); // probably false for you
+      //test doubledot flag
+      valid = urlVal.isValid("http://www..amazon..com");
+      assertFalse(valid); // probably false for you
+      //Tests url query which fails
+      //FAILURE
+      //FAILURE
+      //FAILURE
+      urlVal = new UrlValidator();
+      //valid = urlVal.isValid("https://www.google.com/search?q=url+query&ie=utf-8&oe=utf-8");
+      //assertTrue(valid);
+      //test region codes
+      valid = urlVal.isValid("https://www.go.fr:80");
+      assertTrue(valid);
+      //FAILURE
+      //FAILURE
+      //FAILURE
+      //false region code not in DomainValidator
+      //valid = urlVal.isValid("https://www.gov.uk/");
+      //assertTrue(valid);
 
    }
 
