@@ -36,9 +36,7 @@ public class UrlValidatorTest extends TestCase {
       super(testName);
    }
 
-
-
-   public void testManualTest()
+   public void testManually()
    {
      String validURLs[] = {
         "http://www.amazon.com",
@@ -124,14 +122,95 @@ public class UrlValidatorTest extends TestCase {
    }
 
 
-   public void testYourFirstPartition()
+   public void testSchemes()
    {
+       UrlValidator validator = new UrlValidator();
+       ResultPair[] testSchemes = {
+               new ResultPair("http://", true),
+               new ResultPair("ftp://", true),
+               new ResultPair("https://", true),
+               new ResultPair("123456://", false),
+               new ResultPair("/:/", false)
+       };
 
+       for (ResultPair pair : testSchemes) {
+           String url = pair.item + "website.com";
+           boolean valid = validator.isValid(url);
+           System.out.println(url + " " + valid);
+           assertEquals(valid, pair.valid);
+       }
    }
 
-   public void testYourSecondPartition(){
+   public void testAuthorities() {
+       UrlValidator validator = new UrlValidator();
+       ResultPair[] testAuthorities = {
+               new ResultPair("google.com", true),
+               new ResultPair("231.143.81.3", true),
+               new ResultPair("website.io", true),
+               new ResultPair("whatever.us", true),
+               new ResultPair("300.400.100.322", false),
+               new ResultPair(".net", false),
+               new ResultPair("...", false)
+       };
 
+       for (ResultPair pair : testAuthorities) {
+           String url = "https://" + pair.item + "/test/?foo=bar";
+           boolean valid = validator.isValid(url);
+           System.out.println(url + " " + valid);
+           assertEquals(pair.valid, valid);
+       }
    }
+
+   public void testPorts() {
+        UrlValidator validator = new UrlValidator();
+        ResultPair[] testPorts = {
+                new ResultPair(":80", true),
+                new ResultPair(":70000", false),
+                new ResultPair("99:", false),
+                new ResultPair(":", false)
+        };
+
+        for (ResultPair pair : testPorts) {
+            String url = "https://website.com" + pair.item + "/test/?foo=bar";
+            boolean valid = validator.isValid(url);
+            System.out.println(url + " " + valid);
+            assertEquals(pair.valid, valid);
+        }
+    }
+
+    public void testPaths() {
+        UrlValidator validator = new UrlValidator();
+        ResultPair[] testPorts = {
+                new ResultPair("/", true),
+                new ResultPair("/whatever", true),
+                new ResultPair("/foo/bar", true),
+                new ResultPair("", true),
+                new ResultPair("/bar//", false),
+                new ResultPair("/.../", false)
+        };
+
+        for (ResultPair pair : testPorts) {
+            String url = "https://website.com" + pair.item + "?foo=bar";
+            boolean valid = validator.isValid(url);
+            System.out.println(url + " " + valid);
+            assertEquals(pair.valid, valid);
+        }
+    }
+
+    public void testQueryStrings() {
+        UrlValidator validator = new UrlValidator();
+        ResultPair[] testPorts = {
+                new ResultPair("?foo=bar", true),
+                new ResultPair("?one=foo&two=bar", true),
+        };
+
+        for (ResultPair pair : testPorts) {
+            String url = "https://website.com/test/" + pair.item;
+            boolean valid = validator.isValid(url);
+            System.out.println(url + " " + valid);
+            assertEquals(pair.valid, valid);
+        }
+    }
 
 
    public void testIsValid()
