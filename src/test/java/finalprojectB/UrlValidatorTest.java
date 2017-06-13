@@ -36,9 +36,7 @@ public class UrlValidatorTest extends TestCase {
       super(testName);
    }
 
-
-
-   public void testManualTest()
+   public void testManually()
    {
      String validURLs[] = {
         "http://www.amazon.com",
@@ -180,7 +178,7 @@ public class UrlValidatorTest extends TestCase {
         }
     }
 
-    public void testPath() {
+    public void testPaths() {
         UrlValidator validator = new UrlValidator();
         ResultPair[] testPorts = {
                 new ResultPair("/", true),
@@ -199,7 +197,7 @@ public class UrlValidatorTest extends TestCase {
         }
     }
 
-    public void testQueryString() {
+    public void testQueryStrings() {
         UrlValidator validator = new UrlValidator();
         ResultPair[] testPorts = {
                 new ResultPair("?foo=bar", true),
