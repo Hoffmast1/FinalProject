@@ -15,9 +15,9 @@
  * limitations under the License.
  */
 package finalprojectB;
-
+import java.lang.StringBuilder;
 import junit.framework.TestCase;
-
+import java.util.Random;
 
 
 
@@ -118,7 +118,7 @@ public class UrlValidatorTest extends TestCase {
       //false region code not in DomainValidator
       //valid = urlVal.isValid("https://www.gov.uk/");
       //assertTrue(valid);
-
+      testIsValid();
    }
 
 
@@ -215,15 +215,73 @@ public class UrlValidatorTest extends TestCase {
 
    public void testIsValid()
    {
+     UrlValidator val = new UrlValidator();
 	   for(int i = 0;i<10000;i++)
 	   {
-
+       Random rand = new Random();
+       int boolNum = rand.nextInt(1);
+       if(boolNum == 1) //get valid if 1 else get a url that will fail
+       {
+         assertTrue(val.isValid(buildTestURL(true)));
+       }
+       else assertFalse(val.isValid(buildTestURL(false)));
 	   }
    }
 
    public void testAnyOtherUnitTest()
    {
 
+   }
+   public String buildTestURL(boolean isValid)
+   {
+     String[] schemeValid = {"http://", "https://", "ftp://"};
+     String[] schemeInvalid = {"htttp://", "$%^//:", "ftpftp:://"};
+     String[] domainNameValid = {"google", "facebook", "abcdefg", "github", "orange", "netflix", "youtube", "twitch"};
+     String[] domainNameInvalid = {"goo##gle", "fac14?ebook", "echo file;", "#$^%&*()", "", "||", "youtube|", "||twitch"};
+     String[] domainLevel = {".com", ".de", ".uk", ".gov", ".edu", ".it", ".mil", ".ec", ".kh", ".mf", ".pm", "zy"};
+     String[] domainLevelInvalid = {".comm", ".d+e", "...uk", ".goR", ".UDE", ".*()", ".LURKING", ".garb"};
+     String[] pathValid = {"/asdfasdfa", "", "/asdfas&the+whater", "/asdf$asdf#sadf+1=2", "/!why+(is)+everything~buggy@osu:hafrg&d`f"};
+     String[] pathInvalid = {"//thisDoesn't^/////work", "/>.<;{o}/;:'s'", "/|||||DOING%$ome~/thin&-_-_-_-_-_-_-_-_-_--"};
+     StringBuilder tempURL = new StringBuilder();
+     Random rand = new Random();
+     if(isValid)//build valid string
+     {
+       int  n = rand.nextInt(schemeValid.length);
+       tempURL.append(schemeValid[n]);
+       n = rand.nextInt(domainNameValid.length);
+       tempURL.append(domainNameValid[n]);
+       n = rand.nextInt(domainLevel.length);
+       tempURL.append(domainLevel[n]);
+       n = rand.nextInt(pathValid.length);
+       tempURL.append(pathValid[n]);
+     }
+     else
+     {
+       //choose which peice of the url to invalidate
+        int  x = rand.nextInt(4); //one of 4 to invalidate
+        if(x == 0)
+        {
+          tempURL.append(schemeInvalid[rand.nextInt(schemeInvalid.length)]);
+        }
+        else  tempURL.append(schemeValid[rand.nextInt(schemeValid.length)]);
+        if(x == 1)
+        {
+          tempURL.append(domainNameInvalid[rand.nextInt(domainNameInvalid.length)]);
+        }
+        else  tempURL.append(domainNameValid[rand.nextInt(domainNameValid.length)]);
+        if(x == 2)
+        {
+          tempURL.append(domainLevelInvalid[rand.nextInt(domainLevelInvalid.length)]);
+        }
+        else  tempURL.append(domainLevel[rand.nextInt(domainLevel.length)]);
+        if(x == 3)
+        {
+          tempURL.append(pathInvalid[rand.nextInt(pathInvalid.length)]);
+        }
+        else  tempURL.append(pathValid[rand.nextInt(pathValid.length)]);
+
+     }
+     return tempURL.toString();
    }
    /**
     * Create set of tests by taking the testUrlXXX arrays and
